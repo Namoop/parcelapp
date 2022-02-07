@@ -12,13 +12,12 @@ interface Sprite {
 type SpriteObj = { [key: string]: Sprite };
 declare let sprites: SpriteObj;
 
-declare module '*.png' {
-  const Content: any;
-  export default Content;
-}
-
-declare module '*.toml' {
+declare module "*.png" {
 	const Content: any;
 	export default Content;
-  }
-  
+}
+
+declare module "*.toml" {
+	const Content: any;
+	export default Content;
+}

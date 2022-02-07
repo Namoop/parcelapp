@@ -20,7 +20,7 @@ Time.in(5, "seconds", () => {
 	console.log("you're welcome")
 });
 
-let steve = new Button()
+let steve = new Button().move(100,200)
 
 /**
  * Options that can change how the game runs

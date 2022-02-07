@@ -545,7 +545,7 @@ _setup.Time.in(5, "seconds", ()=>{
     console.log(_mapsTomlDefault.default);
     console.log("you're welcome");
 });
-let steve = new _spriteClass.Button();
+let steve = new _spriteClass.Button().move(100, 200);
 const runOptions = {
     gamespeed: 0,
     stop: false,
