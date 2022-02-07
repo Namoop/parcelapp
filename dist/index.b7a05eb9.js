@@ -142,7 +142,7 @@
       this[globalName] = mainExports;
     }
   }
-})({"lpcHr":[function(require,module,exports) {
+})({"9JqDG":[function(require,module,exports) {
 "use strict";
 var HMR_HOST = null;
 var HMR_PORT = null;
@@ -520,9 +520,6 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"jeorp":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "runOptions", ()=>runOptions
-);
 var _mapsToml = require("./assets/config/maps.toml");
 var _mapsTomlDefault = parcelHelpers.interopDefault(_mapsToml);
 var _setup = require("./setup");
@@ -530,60 +527,29 @@ var _spriteClass = require("./assets/classes/sprite.class");
 var _bobPng = require("./assets/images/bob.png");
 var _bobPngDefault = parcelHelpers.interopDefault(_bobPng);
 const app = document.getElementById("app");
-let resolveframe;
 window["sprites"] = {
 }; //global variable
-window["nextframe"] = new Promise((r)=>resolveframe = r
-);
-app.appendChild(_setup.cnv);
-let img = new Image();
-img.src = _bobPngDefault.default;
-let bob = new _spriteClass.Sprite(img).move(100, 100).resize(200);
-bob.glide(600, 100, 10);
-_setup.Time.in(5, "seconds", ()=>{
-    bob.move(100, 100).glide(350, 100, 10);
-    console.log(_mapsTomlDefault.default);
-    console.log("you're welcome");
-});
-let steve = new _spriteClass.Button().move(100, 200);
-const runOptions = {
-    gamespeed: 0,
-    stop: false,
-    scale: (window.innerWidth - 20) / 800
-};
+let bob;
 function init() {
+    app.appendChild(_setup.cnv);
+    let img = new Image();
+    img.src = _bobPngDefault.default;
+    bob = new _spriteClass.Sprite(img).move(100, 100).resize(200);
+    bob.glide(600, 100, 10);
+    _setup.Time.in(5, "seconds", ()=>{
+        bob.move(100, 100).glide(350, 100, 10);
+        console.log(_mapsTomlDefault.default);
+        console.log("you're welcome");
+    });
+    let steve = new _spriteClass.Button().move(100, 200);
 }
-function run() {
+function myloop() {
+    bob.direction += 0.1;
 }
-function loop() {
-    frame++;
-    fps.push(Date.now());
-    document.getElementById("dg").innerText = `fps: ${fps.length}`;
-    while(Date.now() - fps[0] > 980)fps.shift();
-    _setup.pen.clearRect(0, 0, _setup.cnv.width, _setup.cnv.height);
-    _setup.cnv.width = 800 * runOptions.scale;
-    _setup.cnv.height = 400 * runOptions.scale;
-    run();
-    _setup.draw();
-    resolveframe();
-    nextframe = new Promise((r)=>resolveframe = r
-    );
-    if (!runOptions.stop) {
-        if (runOptions.gamespeed == 0) window.requestAnimationFrame(loop);
-        else setTimeout(window.requestAnimationFrame, runOptions.gamespeed, loop);
-    }
-}
-let frame = 0;
-let fps = [];
-//reminder: set config as global
-console.clear();
-async function load() {
-    init();
-    loop();
-}
-load();
+init();
+_setup.loop(myloop);
 
-},{"./setup":"1ctuX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./assets/classes/sprite.class":"bULpc","./assets/images/bob.png":"6qCP7","./assets/config/maps.toml":"jl10I"}],"1ctuX":[function(require,module,exports) {
+},{"./setup":"1ctuX","./assets/config/maps.toml":"jl10I","./assets/classes/sprite.class":"bULpc","./assets/images/bob.png":"6qCP7","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1ctuX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "cnv", ()=>cnv
@@ -594,6 +560,10 @@ parcelHelpers.export(exports, "draw", ()=>draw
 );
 parcelHelpers.export(exports, "Time", ()=>Time
 );
+parcelHelpers.export(exports, "loop", ()=>loop
+);
+var _systemToml = require("./assets/config/system.toml");
+var _systemTomlDefault = parcelHelpers.interopDefault(_systemToml);
 const cnv = document.createElement("canvas");
 cnv.oncontextmenu = function() {
     return false;
@@ -677,9 +647,36 @@ cnv.ontouchstart = function(e) {
     ];
     mouseDown[0] = true;
 //for (let i of me.onclicks) if (e.button == i[1]) i[0](e);
-}; //}
+};
+//}
+let resolveframe, run;
+window["nextframe"] = new Promise((r)=>resolveframe = r
+);
+function loop(func) {
+    if (typeof func == "function") run = func;
+    frame++;
+    fps.push(Date.now());
+    document.getElementById("dg").innerText = `fps: ${fps.length}`;
+    while(Date.now() - fps[0] > 980)fps.shift();
+    pen.clearRect(0, 0, cnv.width, cnv.height);
+    let scale = (window.innerWidth - 20) / 800 * (_systemTomlDefault.default.runOptions.scale / 100);
+    cnv.width = 800 * scale;
+    cnv.height = 400 * scale;
+    run();
+    draw();
+    resolveframe();
+    nextframe = new Promise((r)=>resolveframe = r
+    );
+    if (!_systemTomlDefault.default.runOptions.stop) {
+        if (_systemTomlDefault.default.runOptions.gamespeed == 0) window.requestAnimationFrame(loop);
+        else setTimeout(window.requestAnimationFrame, _systemTomlDefault.default.runOptions.gamespeed, loop);
+    }
+}
+let frame = 0;
+let fps = [];
+console.clear();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./assets/config/system.toml":"d9fd1"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -707,6 +704,30 @@ exports.export = function(dest, destName, get) {
         enumerable: true,
         get: get
     });
+};
+
+},{}],"d9fd1":[function(require,module,exports) {
+module.exports = {
+    "runOptions": {
+        "gamespeed": 0,
+        "scale": 100
+    }
+};
+
+},{}],"jl10I":[function(require,module,exports) {
+module.exports = {
+    "spicy": "meatballs",
+    "hot": "sauce",
+    "pasta": "straciatelle",
+    "table": {
+        "test": 4,
+        "other": 5,
+        "myarr": [
+            "pleasestop",
+            "go to sleep",
+            "15"
+        ]
+    }
 };
 
 },{}],"bULpc":[function(require,module,exports) {
@@ -845,22 +866,6 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"jl10I":[function(require,module,exports) {
-module.exports = {
-    "spicy": "meatballs",
-    "hot": "sauce",
-    "pasta": "straciatelle",
-    "table": {
-        "test": 4,
-        "other": 5,
-        "myarr": [
-            "pleasestop",
-            "go to sleep",
-            "15"
-        ]
-    }
-};
-
-},{}]},["lpcHr","jeorp"], "jeorp", "parcelRequire716c")
+},{}]},["9JqDG","jeorp"], "jeorp", "parcelRequire716c")
 
 //# sourceMappingURL=index.b7a05eb9.js.map

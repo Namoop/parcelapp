@@ -1,3 +1,5 @@
+import config from "./assets/config/system.toml";
+
 export const cnv = document.createElement("canvas");
 cnv.oncontextmenu = function () {
 	return false;
@@ -87,3 +89,35 @@ cnv.ontouchstart = function (e) {
 	//for (let i of me.onclicks) if (e.button == i[1]) i[0](e);
 };
 //}
+
+let resolveframe: Function, run: Function;
+window["nextframe"] = new Promise((r) => (resolveframe = r));
+export function loop(func?: Function | number): void {
+	if (typeof func == "function") run = func;
+	frame++;
+	fps.push(Date.now());
+	document.getElementById("dg").innerText = `fps: ${fps.length}`;
+	while (Date.now() - fps[0] > 980) fps.shift();
+	pen.clearRect(0, 0, cnv.width, cnv.height);
+	let scale =
+		((window.innerWidth - 20) / 800) * (config.runOptions.scale / 100);
+	cnv.width = 800 * scale;
+	cnv.height = 400 * scale;
+	run();
+	draw();
+	resolveframe();
+	nextframe = new Promise((r) => (resolveframe = r));
+	if (!config.runOptions.stop) {
+		if (config.runOptions.gamespeed == 0)
+			window.requestAnimationFrame(loop);
+		else
+			setTimeout(
+				window.requestAnimationFrame,
+				config.runOptions.gamespeed,
+				loop
+			);
+	}
+}
+let frame = 0;
+let fps: number[] = [];
+console.clear();
