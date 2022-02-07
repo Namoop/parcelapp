@@ -543,6 +543,7 @@ bob.glide(600, 100, 10);
 _setup.Time.in(5, "seconds", ()=>{
     bob.move(100, 100).glide(350, 100, 10);
     console.log(_mapsTomlDefault.default);
+    console.log("you're welcome");
 });
 let steve = new _spriteClass.Button();
 const runOptions = {
