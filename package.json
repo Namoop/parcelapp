@@ -3,7 +3,8 @@
 	"source": "src/index.html",
 	"scripts": {
 		"start": "parcel",
-		"build": "parcel build"
+		"build": "parcel build",
+		"prebuild": "rmdir dist /s /q"
 	},
 	"devDependencies": {
 		"@parcel/transformer-toml": "^2.2.1",
