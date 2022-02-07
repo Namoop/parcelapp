@@ -847,8 +847,16 @@ exports.getOrigin = getOrigin;
 },{}],"jl10I":[function(require,module,exports) {
 module.exports = {
     "spicy": "meatballs",
+    "hot": "sauce",
+    "pasta": "straciatelle",
     "table": {
-        "test": 4
+        "test": 4,
+        "other": 5,
+        "myarr": [
+            "pleasestop",
+            "go to sleep",
+            "15"
+        ]
     }
 };
 
