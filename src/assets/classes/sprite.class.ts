@@ -53,25 +53,38 @@ export class Sprite {
 	pointTowards(obj: Sprite) {} //set direction towards param
 }
 
-export class Button extends Sprite {
-	constructor() {
-		let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-		let circ = document.createElementNS(
-			"http://www.w3.org/2000/svg",
-			"circle"
-		);
-		setatts(circ, {
-			cx: 25,
-			cy: 35,
-			r: 20,
-		});
-		setatts(svg, {
-			xmlns: "http://www.w3.org/2000/svg",
-			width: 50,
-			height: 50,
-		});
-		svg.appendChild(circ);
+interface buttonOptions {
+	width?: number;
+	height?: number;
+	roundedx?: number;
+	roundedy?: number;
+}
 
+export class Button extends Sprite {
+	constructor(op: buttonOptions = {}) {
+		const w = op.width ?? 70;
+		const h = op.height ?? (op.width ?? 70) / 3.5;
+		const rect = document.createElementNS(svgURL, "rect");
+		setatts(rect, {
+			x: w / 14,
+			y: h / 4,
+			width: w,
+			height: h,
+			rx: op.roundedx ?? 10,
+			ry: op.roundedy ?? 10,
+			fill: "none",
+			stroke: "blue",
+			"stroke-width": "2",
+		});
+
+		//create svg wrapper for shape
+		const svg = document.createElementNS(svgURL, "svg");
+		setatts(svg, {
+			xmlns: svgURL,
+			width: w * (1 + 1 / 7),
+			height: h * (1 + 1 / 4),
+		});
+		svg.appendChild(rect);
 		const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
 		const url = URL.createObjectURL(blob);
 		const image = new Image();
@@ -81,9 +94,11 @@ export class Button extends Sprite {
 		});
 
 		super(image);
+		this.resize(100);
 	}
 }
 
+const svgURL = "http://www.w3.org/2000/svg";
 function setatts(el: any, vals: object) {
 	for (let i of Object.keys(vals)) el.setAttribute(i, vals[i]);
 }

@@ -120,4 +120,3 @@ export function loop(func?: Function | number): void {
 }
 let frame = 0;
 let fps: number[] = [];
-console.clear();
