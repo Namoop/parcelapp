@@ -19,6 +19,8 @@ npm run build
 npm start
 ```
 
+You can now open localhost:1234 to view the project
+
 ## Other things
 
 ### Added:
