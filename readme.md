@@ -8,17 +8,30 @@ Language: Typescript
 
 Config: TOML
 
-## Added:
+## Install
+
+Clone the repository, then in a terminal in the repository:
+
+```sh
+npm install --save-dev parcel
+mkdir dist
+npm run build
+npm start
+```
+
+## Other things
+
+### Added:
 
 -   sprite objects
 -   image loading
 -   config loading
 
-## Coming soon:
+### Coming soon:
 
 -   basic sprite extensions (button, map)
 -   background
 
-## Considering:
+### Considering:
 
 -   seperating scenes (maybe even by file)
