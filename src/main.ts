@@ -2,6 +2,7 @@ const app: HTMLElement = document.getElementById("app");
 
 window["sprites"] = {}; //global variable
 
+import "./types"
 import toml from "./assets/config/maps.toml";
 import { cnv, Time, loop } from "./setup";
 import { Button, Sprite } from "./assets/classes/sprite.class";

@@ -70,25 +70,35 @@ export class Button extends Sprite {
 		const sw = op.strokewidth ?? 2;
 		const rect = document.createElementNS(svgURL, "rect");
 		setatts(rect, {
-			x: sw/2,
-			y: sw/2,
+			x: sw / 2,
+			y: sw / 2,
 			width: w,
 			height: h,
 			rx: op.roundedx ?? 15,
 			ry: op.roundedy ?? 15,
-			fill: op.fill ?? "grey",
+			fill: op.fill ?? "gray",
 			stroke: op.stroke ?? "black",
-			"stroke-width": sw
+			"stroke-width": sw,
+		});
+		const txt = document.createElementNS(svgURL, "text");
+		txt.innerHTML = text;
+		setatts(txt, {
+			fill: "white",
+			x: w / 2,
+			y: h / 2,
+			"text-anchor": "middle",
+			"dominant-baseline": "central",
 		});
 
 		//create svg wrapper for shape
 		const svg = document.createElementNS(svgURL, "svg");
 		setatts(svg, {
 			xmlns: svgURL,
-			width: w+sw,
-			height: h+sw,
+			width: w + sw,
+			height: h + sw,
 		});
 		svg.appendChild(rect);
+		svg.appendChild(txt);
 		const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
 		const url = URL.createObjectURL(blob);
 		const image = new Image();
