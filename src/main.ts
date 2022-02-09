@@ -23,7 +23,7 @@ function init() {
 		console.log("you're welcome");
 	});
 
-	steve = new Button({width: 100})
+	steve = new Button("ballon 12pt", {width: 100})
 }
 function myloop() {
 	bob.direction += 0.1;

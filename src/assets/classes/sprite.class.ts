@@ -58,31 +58,35 @@ interface buttonOptions {
 	height?: number;
 	roundedx?: number;
 	roundedy?: number;
+	fill?: string;
+	stroke?: string;
+	strokewidth?: number;
 }
 
 export class Button extends Sprite {
-	constructor(op: buttonOptions = {}) {
+	constructor(text: string, op: buttonOptions = {}) {
 		const w = op.width ?? 70;
 		const h = op.height ?? (op.width ?? 70) / 3.5;
+		const sw = op.strokewidth ?? 2;
 		const rect = document.createElementNS(svgURL, "rect");
 		setatts(rect, {
-			x: w / 14,
-			y: h / 4,
+			x: sw/2,
+			y: sw/2,
 			width: w,
 			height: h,
-			rx: op.roundedx ?? 10,
-			ry: op.roundedy ?? 10,
-			fill: "none",
-			stroke: "blue",
-			"stroke-width": "2",
+			rx: op.roundedx ?? 15,
+			ry: op.roundedy ?? 15,
+			fill: op.fill ?? "grey",
+			stroke: op.stroke ?? "black",
+			"stroke-width": sw
 		});
 
 		//create svg wrapper for shape
 		const svg = document.createElementNS(svgURL, "svg");
 		setatts(svg, {
 			xmlns: svgURL,
-			width: w * (1 + 1 / 7),
-			height: h * (1 + 1 / 4),
+			width: w+sw,
+			height: h+sw,
 		});
 		svg.appendChild(rect);
 		const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
