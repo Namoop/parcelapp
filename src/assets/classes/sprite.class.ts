@@ -61,6 +61,7 @@ interface buttonOptions {
 	fill?: string;
 	stroke?: string;
 	strokewidth?: number;
+	font?: string;
 }
 
 export class Button extends Sprite {
@@ -86,6 +87,7 @@ export class Button extends Sprite {
 			fill: "white",
 			x: w / 2,
 			y: h / 2,
+			"font-family": op.font ?? "Arial",
 			"text-anchor": "middle",
 			"dominant-baseline": "central",
 		});
@@ -108,7 +110,7 @@ export class Button extends Sprite {
 		});
 
 		super(image);
-		this.resize(100);
+		this.onhover = ()=>(0)
 	}
 }
 
