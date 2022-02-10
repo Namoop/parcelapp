@@ -8,12 +8,13 @@ export class Sprite {
 	width = 100;
 	height = 100;
 	alpha = 100;
-	id = Date.now();
+	id: number;
 	draggable = false;
 	constructor(src: CanvasImageSource) {
+		this.id = performance.now();
 		this.src = src;
 
-		sprites[this.id] = this;
+		sprites[Object.values(sprites).length] = this;
 	}
 	/** Move the position of the sprite
 	 * @param {number} x Target position
@@ -52,7 +53,14 @@ export class Sprite {
 	onclick() {} //
 	onhover() {} //
 
-	//pointTowards(obj: Sprite) {} //set direction towards param
+	/** Point towards target sprite
+	 * @param {Sprite} target The sprite to orientate towards
+	 */
+	pointTowards(target: Sprite): Sprite {
+		let radians = Math.atan2(target.y - this.y, target.x - this.x);
+		this.direction = (radians * 180) / Math.PI;
+		return this;
+	}
 }
 
 interface buttonOptions {
@@ -66,7 +74,6 @@ interface buttonOptions {
 	font?: string;
 }
 
-import btsvg from "images/button.svg";
 export class Button extends Sprite {
 	constructor(text: string, op: buttonOptions = {}) {
 		const w = op.width ?? 70;
@@ -81,7 +88,7 @@ export class Button extends Sprite {
 			rx: op.roundedx ?? 15,
 			ry: op.roundedy ?? 15,
 			fill: op.fill ?? "gray",
-			stroke: op.stroke ?? "black",
+			stroke: op.stroke ?? "orange",
 			"stroke-width": sw,
 		});
 		const txt = document.createElementNS(svgURL, "text");
@@ -113,8 +120,8 @@ export class Button extends Sprite {
 			once: true,
 		});
 
-		console.log(btsvg);
-		image.src = btsvg;
+		//console.log(btsvg);
+		//image.src = btsvg;
 		super(image);
 		this.onhover = () => 0;
 	}

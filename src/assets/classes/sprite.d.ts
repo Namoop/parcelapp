@@ -12,6 +12,7 @@ interface Sprite {
 	draggable: boolean;
 	move: (x: number, y: number) => Sprite;
 	resize: (width: number, height?: number) => Sprite;
+	pointTowards: (target: Sprite) => Sprite;
 	glide: (x: number, y: number, speed: number) => Promise<void>;
 
 	onhover: () => void;

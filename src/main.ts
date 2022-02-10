@@ -38,6 +38,7 @@ function init() {
 function myloop() {
 	bob.direction += 0.1;
 	steve.move(Math.sin(Date.now() / 3000) * 100 + 200, 200);
+	steve.pointTowards(bob)
 }
 
 init();
