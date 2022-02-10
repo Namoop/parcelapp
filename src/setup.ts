@@ -12,13 +12,8 @@ export function draw(): void {
 	let spriteArr = Object.values(sprites).sort((a, b) =>
 		Number(a.zIndex - b.zIndex)
 	);
-	ctx.rect(10, 100, 50, 50);
-	ctx.fillStyle = "green"
-	ctx.fill();
-	hover = null;
+	let pixel = "0,0,0,0";
 	for (let i of spriteArr) {
-		let pixel;
-		pixel = ctx.getImageData(Mouse.raw[0],Mouse.raw[1], 1, 1).data.join();
 		ctx.save();
 		ctx.globalAlpha = i.alpha / 100;
 		ctx.translate(i.x, i.y);
@@ -31,9 +26,24 @@ export function draw(): void {
 			(i.src.height * i.height) / 100
 		);
 		ctx.restore();
-		let newpixel;
-		newpixel = ctx.getImageData(Mouse.raw[0],Mouse.raw[1], 1, 1).data.join();
-		if (pixel != newpixel) hover = i;
+		if (frame % 30 != 0) continue;
+
+		if (hover == i || !hover) {
+			let newpixel: string;
+			newpixel = ctx
+				.getImageData(Mouse.raw[0], Mouse.raw[1], 1, 1)
+				.data.join();
+			if (hover == i) {
+				if (pixel == newpixel) hover = null;
+			} else if (pixel != newpixel) {
+				hover = i;
+				i.onhover();
+			}
+
+			pixel = newpixel;
+		}
+
+		globals[0] = hover;
 	}
 }
 
@@ -89,8 +99,8 @@ export const Mouse = {
 			windowMouseX - cnv.getBoundingClientRect().x,
 			windowMouseY - cnv.getBoundingClientRect().y,
 		];
-		if (isNaN(data[0])) data[0] = 0
-		if (isNaN(data[1])) data[1] = 0
+		if (isNaN(data[0])) data[0] = 0;
+		if (isNaN(data[1])) data[1] = 0;
 		return data;
 	},
 	/** X Position of mouse pointer, relative to canvas (0-800) */
@@ -144,7 +154,7 @@ export function loop(func?: Function | number): void {
 	fps.push(Date.now());
 	document.getElementById("dg").innerText = `fps: ${fps.length}`;
 	let mDOM = document.getElementById("mouse");
-	mDOM.innerHTML = Mouse.raw[0] + " &#9; " + Mouse.raw[1];	
+	mDOM.innerHTML = Mouse.raw[0] + " &#9; " + Mouse.raw[1];
 	while (Date.now() - fps[0] > 980) fps.shift();
 	ctx.clearRect(0, 0, cnv.width, cnv.height);
 	scale = ((window.innerWidth - 20) / 800) * (config.runOptions.scale / 100);

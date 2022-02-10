@@ -8,10 +8,12 @@ interface Sprite {
 	height: number;
 	src: HTMLImageElement;
 	zIndex: bigint;
+	onhover: () => void;
 	//move: (x: number, y: number) => void;
 }
 type SpriteObj = { [key: string]: Sprite };
 declare let sprites: SpriteObj;
+declare let globals: any[];
 
 declare module "*.png" {
 	const file: any;

@@ -1,6 +1,8 @@
 const app: HTMLElement = document.getElementById("app");
 
-window["sprites"] = {}; //global variable
+//global variables
+window["sprites"] = {};
+window["globals"] = [2];
 
 import "./types";
 import toml from "./assets/config/maps.toml";
@@ -29,6 +31,8 @@ function init() {
 	bruh.src = lmnop;
 	let ballet = new Sprite(bruh);
 	ballet.move(48, 46);
+
+	bob.onhover = () => {console.log("cheeeeese")}
 }
 function myloop() {
 	bob.direction += 0.1;
