@@ -1,6 +1,10 @@
 # Dots Defense Towers
 
-From-scratch remake of https://uselesspie.itch.io/ddt
+From-scratch typescript game library
+
+Built for my own purposes but anybody can use it
+
+Will be used for ts remake of https://uselesspie.itch.io/ddt
 
 Packager: Parcel
 

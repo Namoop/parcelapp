@@ -7,6 +7,7 @@ interface Sprite {
 	width: number;
 	height: number;
 	src: HTMLImageElement;
+	zIndex: bigint;
 	//move: (x: number, y: number) => void;
 }
 type SpriteObj = { [key: string]: Sprite };

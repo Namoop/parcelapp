@@ -3,6 +3,7 @@ export class Sprite {
 	x = 0;
 	y = 0;
 	direction = 0;
+	zIndex: bigint = 0n;
 	width = 100;
 	height = 100;
 	alpha = 100;
@@ -110,7 +111,7 @@ export class Button extends Sprite {
 		});
 
 		super(image);
-		this.onhover = ()=>(0)
+		this.onhover = () => 0;
 	}
 }
 
