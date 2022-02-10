@@ -1,3 +1,4 @@
+import "../../types";
 export class Sprite {
 	src: any;
 	x = 0;
@@ -37,7 +38,7 @@ export class Sprite {
 	 * @param {number} x Target position
 	 * @param {number} y
 	 */
-	async glide(x: number, y: number, speed) {
+	async glide(x: number, y: number, speed: number) {
 		while (Math.hypot(x - this.x, y - this.y) > 1) {
 			this.x += (x - this.x) / (speed * 10);
 			this.y += (y - this.y) / (speed * 10);
@@ -46,12 +47,12 @@ export class Sprite {
 		[this.x, this.y] = [x, y];
 	}
 
-	touching() {} //colliding with
-	touchingAll() {} //colliding with type | sprite.touchingAll(Dot) -> [dot1, dot2]
+	//touching() {} //colliding with
+	//touchingAll() {} //colliding with type | sprite.touchingAll(Dot) -> [dot1, dot2]
 	onclick() {} //
 	onhover() {} //
 
-	pointTowards(obj: Sprite) {} //set direction towards param
+	//pointTowards(obj: Sprite) {} //set direction towards param
 }
 
 interface buttonOptions {
@@ -65,6 +66,7 @@ interface buttonOptions {
 	font?: string;
 }
 
+import btsvg from "images/button.svg";
 export class Button extends Sprite {
 	constructor(text: string, op: buttonOptions = {}) {
 		const w = op.width ?? 70;
@@ -102,6 +104,7 @@ export class Button extends Sprite {
 		});
 		svg.appendChild(rect);
 		svg.appendChild(txt);
+		console.log(svg);
 		const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
 		const url = URL.createObjectURL(blob);
 		const image = new Image();
@@ -110,6 +113,8 @@ export class Button extends Sprite {
 			once: true,
 		});
 
+		console.log(btsvg);
+		image.src = btsvg;
 		super(image);
 		this.onhover = () => 0;
 	}

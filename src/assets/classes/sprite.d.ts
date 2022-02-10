@@ -1,15 +1,21 @@
 declare let nextframe: any;
 interface Sprite {
+	src: HTMLImageElement;
 	x: number;
 	y: number;
-	alpha: number;
 	direction: number;
+	zIndex: bigint;
 	width: number;
 	height: number;
-	src: HTMLImageElement;
-	zIndex: bigint;
+	alpha: number;
+	id: number;
+	draggable: boolean;
+	move: (x: number, y: number) => Sprite;
+	resize: (width: number, height?: number) => Sprite;
+	glide: (x: number, y: number, speed: number) => Promise<void>;
+
 	onhover: () => void;
-	//move: (x: number, y: number) => void;
+	onclick: () => void;
 }
 type SpriteObj = { [key: string]: Sprite };
 declare let sprites: SpriteObj;
@@ -19,3 +25,8 @@ declare module "*.png" {
 	const file: any;
 	export default file;
 }
+declare module "*.svg" {
+	const file: any;
+	export default file;
+}
+

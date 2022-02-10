@@ -4,12 +4,13 @@ const app: HTMLElement = document.getElementById("app");
 window["sprites"] = {};
 window["globals"] = [2];
 
-import "./types";
-import toml from "./assets/config/maps.toml";
+import "src/types";
+import toml from "config/maps.toml";
 import { cnv, Time, loop } from "./setup";
 import { Button, Sprite } from "./assets/classes/sprite.class";
-import Bob from "./assets/images/bob.png";
-import lmnop from "./assets/images/brown.png";
+import Bob from "images/bob.png";
+import lmnop from "images/brown.png";
+//https://parceljs.org/features/dependency-resolution/#glob-specifiers
 
 let bob: Sprite, steve: Sprite;
 function init() {

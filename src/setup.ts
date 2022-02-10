@@ -1,3 +1,5 @@
+import "./types";
+import { Sprite } from "./assets/classes/sprite.class";
 import config from "./assets/config/system.toml";
 
 export const cnv = document.createElement("canvas");
@@ -14,6 +16,7 @@ export function draw(): void {
 	);
 	let pixel = "0,0,0,0";
 	for (let i of spriteArr) {
+		//draw the sprite
 		ctx.save();
 		ctx.globalAlpha = i.alpha / 100;
 		ctx.translate(i.x, i.y);
@@ -26,8 +29,9 @@ export function draw(): void {
 			(i.src.height * i.height) / 100
 		);
 		ctx.restore();
-		if (frame % 30 != 0) continue;
 
+		//check if the mouse is over a recently drawn pixel - meaning the mouse is hovering over the sprite
+		if (frame % config.mouse.onHoverDelay != 0) continue;
 		if (hover == i || !hover) {
 			let newpixel: string;
 			newpixel = ctx
@@ -85,26 +89,28 @@ window.onkeydown = window.onkeyup = function (e) {
 let windowMouseX: number, windowMouseY: number;
 cnv.onmousemove = (e) =>
 	([windowMouseX, windowMouseY] = [e.clientX, e.clientY]);
-cnv.ontouchmove = (e) =>
+cnv.ontouchmove = (
+	e //probably broken
+) =>
 	([windowMouseX, windowMouseY] = [
 		e.touches[0].clientX,
 		e.touches[0].clientY,
-	]); //tap and place?
+	]); //consider tap and place?
 
 /** Returns user mouse input including position and buttons pressed */
 export const Mouse = {
 	/** The position of the mouse, before scale transformations. Used internally. */
 	raw: {
 		get x() {
-			let data = windowMouseX - cnv.getBoundingClientRect().x
+			let data = windowMouseX - cnv.getBoundingClientRect().x;
 			if (isNaN(data)) data = 0;
-			return data
+			return data;
 		},
 		get y() {
-			let data = windowMouseY - cnv.getBoundingClientRect().y
+			let data = windowMouseY - cnv.getBoundingClientRect().y;
 			if (isNaN(data)) data = 0;
-			return data
-		}
+			return data;
+		},
 	},
 	/** X Position of mouse pointer, relative to canvas (0-800) */
 	get x() {
@@ -136,22 +142,25 @@ cnv.onmouseup = function (e) {
 	windowMouseDownArray[e.button] = false;
 };
 cnv.ontouchend = function (e) {
+	//might be broken
 	windowMouseDownArray[0] = false;
 };
 cnv.onmousedown = function (e) {
 	windowMouseDownArray[e.button] = true;
-	//for (let i of me.onclicks) if (e.button == i[1]) i[0](e);
 };
 cnv.ontouchstart = function (e) {
+	//might be broken
 	[windowMouseX, windowMouseY] = [e.touches[0].clientX, e.touches[0].clientY];
 	windowMouseDownArray[0] = true;
-	//for (let i of me.onclicks) if (e.button == i[1]) i[0](e);
 };
-//}
 
 let resolveframe: Function, run: Function, scale: number;
+let fps: number[] = [],
+	frame = 0;
 window["nextframe"] = new Promise((r) => (resolveframe = r));
+
 export function loop(func?: Function | number): void {
+	//manage internals
 	if (typeof func == "function") run = func;
 	frame++;
 	fps.push(Date.now());
@@ -159,13 +168,20 @@ export function loop(func?: Function | number): void {
 	let mDOM = document.getElementById("mouse");
 	mDOM.innerHTML = Mouse.x + " &#9; " + Mouse.y;
 	while (Date.now() - fps[0] > 980) fps.shift();
+
+	//refresh canvas
 	ctx.clearRect(0, 0, cnv.width, cnv.height);
 	scale = ((window.innerWidth - 20) / 800) * (config.runOptions.scale / 100);
 	cnv.width = 800 * scale;
 	cnv.height = 400 * scale;
+
+	//run code!
 	run();
-	draw();
+	draw(); //includes hover detection
 	resolveframe();
+	spriteClickHandler();
+
+	//prepare for next frame
 	nextframe = new Promise((r) => (resolveframe = r));
 	if (!config.runOptions.stop) {
 		if (config.runOptions.gamespeed == 0)
@@ -178,5 +194,7 @@ export function loop(func?: Function | number): void {
 			);
 	}
 }
-let frame = 0;
-let fps: number[] = [];
+
+function spriteClickHandler () {
+
+}

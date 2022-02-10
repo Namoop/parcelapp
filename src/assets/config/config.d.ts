@@ -5,6 +5,9 @@ declare module "*/system.toml" {
 			scale: number;
 			stop: boolean;
 		};
+		mouse: {
+			onHoverDelay: number;
+		}
 	};
 	export default file;
 }

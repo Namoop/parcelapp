@@ -9,5 +9,11 @@
 	"devDependencies": {
 		"@parcel/transformer-toml": "^2.2.1",
 		"parcel": "^2.2.1"
+	},
+	"alias": {
+		"images": 	"./src/assets/images",
+		"classes": 	"./src/assets/classes",
+		"config": 	"./src/assets/config",
+		"src": 		"./src"
 	}
 }
