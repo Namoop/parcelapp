@@ -31,7 +31,7 @@ export function draw(): void {
 		if (hover == i || !hover) {
 			let newpixel: string;
 			newpixel = ctx
-				.getImageData(Mouse.raw[0], Mouse.raw[1], 1, 1)
+				.getImageData(Mouse.raw.x, Mouse.raw.y, 1, 1)
 				.data.join();
 			if (hover == i) {
 				if (pixel == newpixel) hover = null;
@@ -93,25 +93,28 @@ cnv.ontouchmove = (e) =>
 
 /** Returns user mouse input including position and buttons pressed */
 export const Mouse = {
-	/** An array with the position of the mouse, before scale transformations. Used internally */
-	get raw() {
-		let data: number[] = [
-			windowMouseX - cnv.getBoundingClientRect().x,
-			windowMouseY - cnv.getBoundingClientRect().y,
-		];
-		if (isNaN(data[0])) data[0] = 0;
-		if (isNaN(data[1])) data[1] = 0;
-		return data;
+	/** The position of the mouse, before scale transformations. Used internally. */
+	raw: {
+		get x() {
+			let data = windowMouseX - cnv.getBoundingClientRect().x
+			if (isNaN(data)) data = 0;
+			return data
+		},
+		get y() {
+			let data = windowMouseY - cnv.getBoundingClientRect().y
+			if (isNaN(data)) data = 0;
+			return data
+		}
 	},
 	/** X Position of mouse pointer, relative to canvas (0-800) */
 	get x() {
-		let relative = (windowMouseX - cnv.getBoundingClientRect().x) / scale;
+		let relative = this.raw.x / scale;
 		let rounded = Math.round(relative * 100) / 100;
 		return rounded;
 	},
 	/** Y Position of mouse pointer, relative to canvas (0-400) */
 	get y() {
-		let relative = (windowMouseY - cnv.getBoundingClientRect().y) / scale;
+		let relative = this.raw.y / scale;
 		let rounded = Math.round(relative * 100) / 100;
 		return rounded;
 	},
@@ -154,7 +157,7 @@ export function loop(func?: Function | number): void {
 	fps.push(Date.now());
 	document.getElementById("dg").innerText = `fps: ${fps.length}`;
 	let mDOM = document.getElementById("mouse");
-	mDOM.innerHTML = Mouse.raw[0] + " &#9; " + Mouse.raw[1];
+	mDOM.innerHTML = Mouse.x + " &#9; " + Mouse.y;
 	while (Date.now() - fps[0] > 980) fps.shift();
 	ctx.clearRect(0, 0, cnv.width, cnv.height);
 	scale = ((window.innerWidth - 20) / 800) * (config.runOptions.scale / 100);
