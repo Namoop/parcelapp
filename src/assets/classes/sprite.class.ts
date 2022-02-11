@@ -11,10 +11,11 @@ export class Sprite {
 	id: number;
 	draggable = false;
 	constructor(src: CanvasImageSource) {
-		this.id = performance.now();
+		for (this.id = 0; sprites[this.id]; this.id++) {}
+		//this.id = performance.now();
 		this.src = src;
 
-		sprites[Object.values(sprites).length] = this;
+		sprites[this.id] = this;
 	}
 	/** Move the position of the sprite
 	 * @param {number} x Target position
