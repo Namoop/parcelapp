@@ -4,7 +4,7 @@ import config from "./assets/config/system.toml";
 
 export const cnv = document.createElement("canvas");
 cnv.oncontextmenu = function () {
-	//return false;
+	return false;
 };
 cnv.style.border = "3px solid #000000";
 export const ctx = cnv.getContext("2d");

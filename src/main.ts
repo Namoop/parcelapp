@@ -1,6 +1,3 @@
-const app: HTMLElement = document.getElementById("app");
-
-//global variables
 window["sprites"] = {};
 window["globals"] = [2];
 
@@ -10,6 +7,7 @@ import { cnv, Time, loop } from "./setup";
 import { Button, Sprite } from "./assets/classes/sprite.class";
 import Bob from "images/bob.png";
 import lmnop from "images/brown.png";
+const app: HTMLElement = document.getElementById("app");
 //https://parceljs.org/features/dependency-resolution/#glob-specifiers
 
 let bob: Sprite, steve: Sprite;
