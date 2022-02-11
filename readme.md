@@ -37,6 +37,7 @@ You can now open localhost:1234 to view the project
 
 -   basic sprite extensions (button, map)
 -   background
+-   fix image position by scale
 
 ### Considering:
 

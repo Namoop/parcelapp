@@ -51,8 +51,9 @@ export class Sprite {
 
 	//touching() {} //colliding with
 	//touchingAll() {} //colliding with type | sprite.touchingAll(Dot) -> [dot1, dot2]
-	onclick() {} //
-	onhover() {} //
+	onclick() {} // when mouse left clicks on sprite
+	onhover() {} // when mouse goes over sprite
+	onblur() {}  // when mouse exits sprite
 
 	/** Point towards target sprite
 	 * @param {Sprite} target The sprite to orientate towards
@@ -75,12 +76,38 @@ interface buttonOptions {
 	font?: string;
 }
 
-export class Button extends Sprite {
+class SVGSprite extends Sprite {
+	svg: SVGSVGElement;
+	constructor (svg: SVGSVGElement) {
+		const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
+		const url = URL.createObjectURL(blob);
+		const image = new Image();
+		image.src = url;
+		image.addEventListener("load", () => URL.revokeObjectURL(url), {
+			once: true,
+		});
+		super(image);
+		this.svg = svg;
+	}
+
+	refreshSVG () {
+		const blob = new Blob([this.svg.outerHTML], { type: "image/svg+xml" });
+		const url = URL.createObjectURL(blob);
+		const image = new Image();
+		image.src = url;
+		image.addEventListener("load", () => URL.revokeObjectURL(url), {
+			once: true,
+		});
+		this.src = image
+	}
+}
+
+export class Button extends SVGSprite {
 	constructor(text: string, op: buttonOptions = {}) {
 		const w = op.width ?? 70;
 		const h = op.height ?? (op.width ?? 70) / 3.5;
 		const sw = op.strokewidth ?? 2;
-		const rect = document.createElementNS(svgURL, "rect");
+		const rect = newSVG("rect");
 		setatts(rect, {
 			x: sw / 2,
 			y: sw / 2,
@@ -92,7 +119,7 @@ export class Button extends Sprite {
 			stroke: op.stroke ?? "orange",
 			"stroke-width": sw,
 		});
-		const txt = document.createElementNS(svgURL, "text");
+		const txt = newSVG("text");
 		txt.innerHTML = text;
 		setatts(txt, {
 			fill: "white",
@@ -104,7 +131,7 @@ export class Button extends Sprite {
 		});
 
 		//create svg wrapper for shape
-		const svg = document.createElementNS(svgURL, "svg");
+		const svg = newSVG("svg") as SVGSVGElement;
 		setatts(svg, {
 			xmlns: svgURL,
 			width: w + sw,
@@ -112,23 +139,15 @@ export class Button extends Sprite {
 		});
 		svg.appendChild(rect);
 		svg.appendChild(txt);
-		console.log(svg);
-		const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
-		const url = URL.createObjectURL(blob);
-		const image = new Image();
-		image.src = url;
-		image.addEventListener("load", () => URL.revokeObjectURL(url), {
-			once: true,
-		});
-
-		//console.log(btsvg);
-		//image.src = btsvg;
-		super(image);
+		
+		console.log(svg)
+		super(svg)
 		this.onhover = () => 0;
 	}
 }
 
 const svgURL = "http://www.w3.org/2000/svg";
+const newSVG = (type: string) => document.createElementNS(svgURL, type)
 function setatts(el: any, vals: object) {
 	for (let i of Object.keys(vals)) el.setAttribute(i, vals[i]);
 }

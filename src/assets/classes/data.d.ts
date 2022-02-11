@@ -17,6 +17,7 @@ interface Sprite {
 
 	onhover: () => void;
 	onclick: () => void;
+	onblur: () => void;
 }
 type SpriteObj = { [key: string]: Sprite };
 declare let sprites: SpriteObj;

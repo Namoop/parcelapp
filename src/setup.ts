@@ -59,7 +59,10 @@ function checkHover(): void {
 		if (!hover || prev) if (touching) hoverHold = i;
 	}
 
-	if (hoverHold != hover) hoverHold?.onhover();
+	if (hoverHold != hover) {
+		hover?.onblur();
+		hoverHold?.onhover();
+	}
 	hover = hoverHold;
 }
 
