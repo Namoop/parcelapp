@@ -29,7 +29,10 @@ function init() {
 	let bruh = new Image();
 	bruh.src = lmnop;
 	let ballet = new Sprite(bruh);
-	ballet.move(80, 165);
+	ballet.move(80, 150);
+	steve.zIndex = 2n
+	let tallet = new Sprite(bruh);
+	tallet.move(90, 180);
 
 	//bob.onhover = () => {console.log("cheeeeese")}
 	bob.onclick = () => {

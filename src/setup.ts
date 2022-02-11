@@ -3,55 +3,64 @@ import { Sprite } from "./assets/classes/sprite.class";
 import config from "./assets/config/system.toml";
 
 export const cnv = document.createElement("canvas");
+export const ctx = cnv.getContext("2d");
 cnv.oncontextmenu = function () {
 	return false;
 };
 cnv.style.border = "3px solid #000000";
-export const ctx = cnv.getContext("2d");
 
-let hover: Sprite;
+let hover: Sprite, spriteArr: Sprite[];
+function spriteToCanvas(
+	context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+	sprite: Sprite
+) {
+	context.save();
+	//context.filter = "blur(4px)"
+	context.globalAlpha = sprite.alpha / 100;
+	context.translate(sprite.x, sprite.y);
+	context.rotate((sprite.direction * Math.PI) / 180);
+	context.drawImage(
+		sprite.src,
+		0 - ((sprite.src.width / 2) * sprite.width) / 100,
+		0 - ((sprite.src.height / 2) * sprite.height) / 100,
+		(sprite.src.width * sprite.width) / 100,
+		(sprite.src.height * sprite.height) / 100
+	);
+	context.restore();
+}
 export function draw(): void {
-	let spriteArr = Object.values(sprites).sort((a, b) =>
+	spriteArr = Object.values(sprites).sort((a, b) =>
 		Number(a.zIndex - b.zIndex)
 	);
-	let pixel = "0,0,0,0";
-	let hoverHold = hover;
 	for (let i of spriteArr) {
-		//draw the sprite
-		ctx.save();
-		//ctx.filter = "blur(4px)"
-		ctx.globalAlpha = i.alpha / 100;
-		ctx.translate(i.x, i.y);
-		ctx.rotate((i.direction * Math.PI) / 180);
-		ctx.drawImage(
-			i.src,
-			0 - ((i.src.width / 2) * i.width) / 100,
-			0 - ((i.src.height / 2) * i.height) / 100,
-			(i.src.width * i.width) / 100,
-			(i.src.height * i.height) / 100
-		);
-		ctx.restore();
-
-		//check if the mouse is over a recently drawn pixel - meaning the mouse is hovering over the sprite
-		if (frame % config.mouse.onHoverDelay != 0) continue;
-		if (hoverHold == i || !hoverHold) {
-			//use offscreen canvas
-			let newpixel: string;
-			newpixel = ctx
-				.getImageData(Mouse.raw.x, Mouse.raw.y, 1, 1)
-				.data.join();
-			if (hoverHold == i) {
-				if (pixel == newpixel) hover = null;
-			} else if (pixel != newpixel) {
-				hover = i;
-				i.onhover();
-			}
-
-			pixel = newpixel;
-		}
-
-		globals[0] = hover;
+		spriteToCanvas(ctx, i);
 	}
+}
+
+const offscreencanvas = new OffscreenCanvas(cnv.width, cnv.height);
+const offctx = offscreencanvas.getContext("2d");
+function checkHover(): void {
+	//if (frame % config.mouse.onHoverDelay != 0) return;
+	let hoverHold = hover,
+		prev = false;
+	for (let i of spriteArr) {
+		offctx.clearRect(0, 0, offscreencanvas.width, offscreencanvas.height);
+		spriteToCanvas(offctx, i);
+		let newpixel: string;
+		newpixel = offctx
+			.getImageData(Mouse.raw.x, Mouse.raw.y, 1, 1)
+			.data.join();
+		let touching = newpixel != "0,0,0,0";
+
+		if (hover == i) {
+			if (!touching) hoverHold = null;
+			prev = true;
+		}
+		if (!hover || prev) if (touching) hoverHold = i;
+	}
+
+	if (hoverHold != hover) hoverHold?.onhover();
+	hover = hoverHold;
 }
 
 export const Time = {
@@ -175,17 +184,16 @@ export function loop(func?: Function | number): void {
 	mDOM.innerHTML = Mouse.x + " &#9; " + Mouse.y;
 	while (Date.now() - fps[0] > 980) fps.shift();
 
-	//refresh canvas
-	ctx.clearRect(0, 0, cnv.width, cnv.height);
+	//clear and resize canvas
 	scale = ((window.innerWidth - 20) / 800) * (config.runOptions.scale / 100);
-	cnv.width = 800 * scale;
-	cnv.height = 400 * scale;
+	offscreencanvas.width = cnv.width = 800 * scale;
+	offscreencanvas.height = cnv.height = 400 * scale;
 
 	//run code!
 	run();
 	draw(); //includes hover detection
 	resolveframe();
-	document.getElementById("other").innerHTML = hover?.constructor.name;
+	checkHover();
 
 	//prepare for next frame
 	nextframe = new Promise((r) => (resolveframe = r));
