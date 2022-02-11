@@ -10,6 +10,7 @@ export class Sprite {
 	alpha = 100;
 	id: number;
 	draggable = false;
+	dragging = false;
 	constructor(src: CanvasImageSource) {
 		for (this.id = 0; sprites[this.id]; this.id++) {}
 		//this.id = performance.now();
@@ -22,6 +23,7 @@ export class Sprite {
 	 * @param {number} y
 	 */
 	move(x: number, y: number): Sprite {
+		if (this.dragging) return this;
 		this.x = x;
 		this.y = y;
 		return this;
@@ -51,9 +53,42 @@ export class Sprite {
 
 	//touching() {} //colliding with
 	//touchingAll() {} //colliding with type | sprite.touchingAll(Dot) -> [dot1, dot2]
-	onclick() {} // when mouse left clicks on sprite
-	onhover() {} // when mouse goes over sprite
-	onblur() {}  // when mouse exits sprite
+
+	get onhover(): Function {
+		return () => {
+			this.defaultOnHover?.();
+			this.userOnHover?.();
+		};
+	}
+	set onhover(x) {
+		this.userOnHover = x;
+	}
+	protected defaultOnHover() {}
+	protected userOnHover: Function;
+
+	get onclick(): Function {
+		return () => {
+			this.defaultOnClick?.();
+			this.userOnClick?.();
+		};
+	}
+	set onclick(x) {
+		this.userOnClick = x;
+	}
+	protected defaultOnClick() {}
+	protected userOnClick: Function;
+
+	get onblur(): Function {
+		return () => {
+			this.defaultOnBlur?.();
+			this.userOnBlur?.();
+		};
+	}
+	set onblur(x) {
+		this.userOnBlur = x;
+	}
+	protected defaultOnBlur() {}
+	protected userOnBlur: Function;
 
 	/** Point towards target sprite
 	 * @param {Sprite} target The sprite to orientate towards
@@ -62,6 +97,32 @@ export class Sprite {
 		let radians = Math.atan2(target.y - this.y, target.x - this.x);
 		this.direction = (radians * 180) / Math.PI;
 		return this;
+	}
+}
+
+class SVGSprite extends Sprite {
+	svg: SVGSVGElement;
+	constructor(svg: SVGSVGElement) {
+		const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
+		const url = URL.createObjectURL(blob);
+		const image = new Image();
+		image.src = url;
+		image.addEventListener("load", () => URL.revokeObjectURL(url), {
+			once: true,
+		});
+		super(image);
+		this.svg = svg;
+	}
+
+	refreshSVG() {
+		const blob = new Blob([this.svg.outerHTML], { type: "image/svg+xml" });
+		const url = URL.createObjectURL(blob);
+		const image = new Image();
+		image.src = url;
+		image.addEventListener("load", () => URL.revokeObjectURL(url), {
+			once: true,
+		});
+		this.src = image;
 	}
 }
 
@@ -75,33 +136,6 @@ interface buttonOptions {
 	strokewidth?: number;
 	font?: string;
 }
-
-class SVGSprite extends Sprite {
-	svg: SVGSVGElement;
-	constructor (svg: SVGSVGElement) {
-		const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
-		const url = URL.createObjectURL(blob);
-		const image = new Image();
-		image.src = url;
-		image.addEventListener("load", () => URL.revokeObjectURL(url), {
-			once: true,
-		});
-		super(image);
-		this.svg = svg;
-	}
-
-	refreshSVG () {
-		const blob = new Blob([this.svg.outerHTML], { type: "image/svg+xml" });
-		const url = URL.createObjectURL(blob);
-		const image = new Image();
-		image.src = url;
-		image.addEventListener("load", () => URL.revokeObjectURL(url), {
-			once: true,
-		});
-		this.src = image
-	}
-}
-
 export class Button extends SVGSprite {
 	constructor(text: string, op: buttonOptions = {}) {
 		const w = op.width ?? 70;
@@ -139,15 +173,20 @@ export class Button extends SVGSprite {
 		});
 		svg.appendChild(rect);
 		svg.appendChild(txt);
-		
-		console.log(svg)
-		super(svg)
-		this.onhover = () => 0;
+
+		console.log(svg);
+		super(svg);
+	}
+	defaultOnBlur(): void {
+		this.resize(100);
+	}
+	defaultOnHover() {
+		this.resize(110);
 	}
 }
 
 const svgURL = "http://www.w3.org/2000/svg";
-const newSVG = (type: string) => document.createElementNS(svgURL, type)
-function setatts(el: any, vals: object) {
+const newSVG = (type: string) => document.createElementNS(svgURL, type);
+const setatts = (el: any, vals: object) => {
 	for (let i of Object.keys(vals)) el.setAttribute(i, vals[i]);
-}
+};
