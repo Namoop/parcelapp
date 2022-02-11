@@ -1,5 +1,5 @@
 import "./types";
-import { Sprite } from "./assets/classes/sprite.class";
+import { Sprite } from "./assets/classes/Sprite.class";
 import config from "./assets/config/system.toml";
 
 export const cnv = document.createElement("canvas");
@@ -40,6 +40,7 @@ export function draw(): void {
 const offscreencanvas = new OffscreenCanvas(cnv.width, cnv.height);
 const offctx = offscreencanvas.getContext("2d");
 function checkHover(): void {
+	//  use if laggy
 	//if (frame % config.mouse.onHoverDelay != 0) return;
 	let hoverHold = hover,
 		prev = false;
