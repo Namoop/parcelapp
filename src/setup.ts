@@ -15,9 +15,11 @@ export function draw(): void {
 		Number(a.zIndex - b.zIndex)
 	);
 	let pixel = "0,0,0,0";
+	let hoverHold = hover;
 	for (let i of spriteArr) {
 		//draw the sprite
 		ctx.save();
+		//ctx.filter = "blur(4px)"
 		ctx.globalAlpha = i.alpha / 100;
 		ctx.translate(i.x, i.y);
 		ctx.rotate((i.direction * Math.PI) / 180);
@@ -32,12 +34,13 @@ export function draw(): void {
 
 		//check if the mouse is over a recently drawn pixel - meaning the mouse is hovering over the sprite
 		if (frame % config.mouse.onHoverDelay != 0) continue;
-		if (hover == i || !hover) {
+		if (hoverHold == i || !hoverHold) {
+			//use offscreen canvas
 			let newpixel: string;
 			newpixel = ctx
 				.getImageData(Mouse.raw.x, Mouse.raw.y, 1, 1)
 				.data.join();
-			if (hover == i) {
+			if (hoverHold == i) {
 				if (pixel == newpixel) hover = null;
 			} else if (pixel != newpixel) {
 				hover = i;
@@ -138,8 +141,10 @@ export const Mouse = {
 	},
 };
 const windowMouseDownArray = [false, false, false];
+let onClickStartSprite: Sprite;
 cnv.onmouseup = function (e) {
 	windowMouseDownArray[e.button] = false;
+	if (hover == onClickStartSprite) onClickStartSprite?.onclick();
 };
 cnv.ontouchend = function (e) {
 	//might be broken
@@ -147,6 +152,7 @@ cnv.ontouchend = function (e) {
 };
 cnv.onmousedown = function (e) {
 	windowMouseDownArray[e.button] = true;
+	onClickStartSprite = hover;
 };
 cnv.ontouchstart = function (e) {
 	//might be broken
@@ -179,7 +185,7 @@ export function loop(func?: Function | number): void {
 	run();
 	draw(); //includes hover detection
 	resolveframe();
-	spriteClickHandler();
+	document.getElementById("other").innerHTML = hover?.constructor.name;
 
 	//prepare for next frame
 	nextframe = new Promise((r) => (resolveframe = r));
@@ -193,8 +199,4 @@ export function loop(func?: Function | number): void {
 				loop
 			);
 	}
-}
-
-function spriteClickHandler () {
-
 }

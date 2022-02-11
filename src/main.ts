@@ -31,14 +31,17 @@ function init() {
 	let bruh = new Image();
 	bruh.src = lmnop;
 	let ballet = new Sprite(bruh);
-	ballet.move(48, 46);
+	ballet.move(80, 165);
 
-	bob.onhover = () => {console.log("cheeeeese")}
+	//bob.onhover = () => {console.log("cheeeeese")}
+	bob.onclick = () => {
+		console.log("AHHH");
+	};
 }
 function myloop() {
 	bob.direction += 0.1;
 	steve.move(Math.sin(Date.now() / 3000) * 100 + 200, 200);
-	steve.pointTowards(bob)
+	steve.pointTowards(bob);
 }
 
 init();
