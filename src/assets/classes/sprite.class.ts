@@ -1,5 +1,7 @@
 import "../../types";
-export class Sprite {
+import { Base } from "./events.class";
+
+export class Sprite extends Base {
 	src: any;
 	x = 0;
 	y = 0;
@@ -7,12 +9,21 @@ export class Sprite {
 	zIndex: bigint = 0n;
 	width = 100;
 	height = 100;
-	alpha = 100;
-	id: number;
+	id: 0;
 	draggable = false;
 	dragging = false;
+	effects = {
+		blur: 0,
+		brightness: 100,
+		opacity: 100,
+		grayscale: 0,
+		hue: 0,
+		invert: 0,
+		saturate: 100,
+	};
 	constructor(src: CanvasImageSource) {
-		for (this.id = 0; sprites[this.id]; this.id++) {}
+		super();
+		while (sprites[this.id]) this.id++
 		//this.id = performance.now();
 		this.src = src;
 
@@ -54,42 +65,6 @@ export class Sprite {
 	//touching() {} //colliding with
 	//touchingAll() {} //colliding with type | sprite.touchingAll(Dot) -> [dot1, dot2]
 
-	get onhover(): Function {
-		return () => {
-			this.defaultOnHover?.();
-			this.userOnHover?.();
-		};
-	}
-	set onhover(x) {
-		this.userOnHover = x;
-	}
-	protected defaultOnHover() {}
-	protected userOnHover: Function;
-
-	get onclick(): Function {
-		return () => {
-			this.defaultOnClick?.();
-			this.userOnClick?.();
-		};
-	}
-	set onclick(x) {
-		this.userOnClick = x;
-	}
-	protected defaultOnClick() {}
-	protected userOnClick: Function;
-
-	get onblur(): Function {
-		return () => {
-			this.defaultOnBlur?.();
-			this.userOnBlur?.();
-		};
-	}
-	set onblur(x) {
-		this.userOnBlur = x;
-	}
-	protected defaultOnBlur() {}
-	protected userOnBlur: Function;
-
 	/** Point towards target sprite
 	 * @param {Sprite} target The sprite to orientate towards
 	 */
@@ -97,6 +72,13 @@ export class Sprite {
 		let radians = Math.atan2(target.y - this.y, target.x - this.x);
 		this.direction = (radians * 180) / Math.PI;
 		return this;
+	}
+
+	filterString () {
+		return `blur(${this.effects.blur}) brightness(${this.effects.brightness}) grayscale(${this.effects.grayscale}) hue-rotate(${this.effects.hue}) invert(${this.effects.invert}) saturate(${this.effects.saturate})`
+	}
+	static Override(spr: Sprite, prop: string, value: any): void {
+		spr[prop] = value;
 	}
 }
 
@@ -141,6 +123,12 @@ export class Button extends SVGSprite {
 		const w = op.width ?? 70;
 		const h = op.height ?? (op.width ?? 70) / 3.5;
 		const sw = op.strokewidth ?? 2;
+		const svg = newSVG("svg") as SVGSVGElement;
+		setatts(svg, {
+			xmlns: svgURL,
+			width: w + sw,
+			height: h + sw,
+		});
 		const rect = newSVG("rect");
 		setatts(rect, {
 			x: sw / 2,
@@ -164,13 +152,6 @@ export class Button extends SVGSprite {
 			"dominant-baseline": "central",
 		});
 
-		//create svg wrapper for shape
-		const svg = newSVG("svg") as SVGSVGElement;
-		setatts(svg, {
-			xmlns: svgURL,
-			width: w + sw,
-			height: h + sw,
-		});
 		svg.appendChild(rect);
 		svg.appendChild(txt);
 

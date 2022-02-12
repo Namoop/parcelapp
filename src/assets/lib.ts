@@ -1,6 +1,6 @@
-import "./types";
-import { Sprite } from "./assets/classes/Sprite.class";
-import config from "./assets/config/system.toml";
+import "../types";
+import { Sprite } from "./classes/Sprite.class";
+import config from "./config/system.toml";
 
 export const cnv = document.createElement("canvas");
 export const ctx = cnv.getContext("2d");
@@ -15,8 +15,8 @@ function spriteToCanvas(
 	sprite: Sprite
 ) {
 	context.save();
-	//context.filter = "blur(4px)"
-	context.globalAlpha = sprite.alpha / 100;
+	//context.filter = sprite.filterString()
+	//context.globalAlpha = sprite.effects.opacity / 100;
 	context.translate(sprite.x, sprite.y);
 	context.rotate((sprite.direction * Math.PI) / 180);
 	context.drawImage(
@@ -41,7 +41,7 @@ const offscreencanvas = new OffscreenCanvas(cnv.width, cnv.height);
 const offctx = offscreencanvas.getContext("2d");
 function checkHover(): void {
 	//  use if laggy
-	//if (frame % config.mouse.onHoverDelay != 0) return;
+	if (frame % config.mouse.onHoverDelay != 0) return;
 	let hoverHold = hover,
 		prev = false;
 	for (let i of spriteArr) {
@@ -158,6 +158,7 @@ let onClickStartSprite: Sprite;
 cnv.onmouseup = function (e) {
 	windowMouseDownArray[e.button] = false;
 	if (hover == onClickStartSprite) onClickStartSprite?.onclick();
+	else hover.onmouseup();
 };
 cnv.ontouchend = function (e) {
 	//might be broken
@@ -166,6 +167,7 @@ cnv.ontouchend = function (e) {
 cnv.onmousedown = function (e) {
 	windowMouseDownArray[e.button] = true;
 	onClickStartSprite = hover;
+	hover.onmousedown();
 };
 cnv.ontouchstart = function (e) {
 	//might be broken

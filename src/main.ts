@@ -3,7 +3,7 @@ window["globals"] = [2];
 
 import "src/types";
 import toml from "config/maps.toml";
-import { cnv, Time, loop } from "./setup";
+import { cnv, Time, loop } from "./assets/lib";
 import { Button, Sprite } from "./assets/classes/Sprite.class";
 import Bob from "images/bob.png";
 import lmnop from "images/brown.png";

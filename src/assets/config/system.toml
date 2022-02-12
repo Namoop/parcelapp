@@ -3,4 +3,4 @@ gamespeed = 0
 scale = 100
 
 [mouse]
-onHoverDelay = 10 # in frames - note most displays are 60 fps, so a delay of 30 is only twice per second
+onHoverDelay = 1 # in frames - note most displays are 60 fps, so a delay of 30 is only twice per second
